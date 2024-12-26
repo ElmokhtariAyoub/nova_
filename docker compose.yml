@@ -1,0 +1,52 @@
+version: '3.8'
+
+networks:
+  ims-network:
+    driver: bridge
+
+services:
+  php:
+    build:
+      context: . 
+      dockerfile: Dockerfile
+    container_name: php-container
+    ports:
+      - "8081:80" # Mapper le port 8081 de l'hôte vers le port 80 du conteneur
+    volumes:
+      - .:/var/www/html # Montage du volume pour synchroniser les fichiers locaux
+    environment:
+      - APACHE_RUN_USER=www-data
+      - APACHE_RUN_GROUP=www-data
+    depends_on:
+      - mysql # Assurer que le service MySQL démarre avant PHP
+    networks:
+      - ims-network
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-container
+    restart: always
+    ports:
+      - "3306:3306" # Mapper le port 3306 pour accéder à MySQL depuis l'hôte
+    environment:
+      MYSQL_ROOT_PASSWORD: root # Mot de passe pour l'utilisateur root
+      MYSQL_DATABASE: nova_electro     # Base de données par défaut
+      MYSQL_USER: ayoub               # Utilisateur MySQL
+      MYSQL_PASSWORD: ayoub           # Mot de passe de l'utilisateur
+    networks:
+      - ims-network
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: phpmyadmin-container
+    restart: always
+    ports:
+      - "8082:80" 
+    environment:
+      PMA_HOST: mysql 
+      PMA_USER: root
+      PMA_PASSWORD: rootpassword
+    depends_on:
+      - mysql 
+    networks:
+      - ims-network
