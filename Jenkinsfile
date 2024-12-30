@@ -2,9 +2,7 @@ pipeline {
     agent any
 
     environment {
-        // Docker Hub credentials ID from Jenkins
         DOCKERHUB_CREDENTIALS = credentials('dockerhub-token') 
-        // Docker image name
         DOCKER_IMAGE = 'ayoubayoub/elmokhtariayoubnova_1'
     }
 
@@ -29,6 +27,7 @@ pipeline {
             steps {
                 echo 'Tagging and pushing Docker image to DockerHub...'
                 bat '''
+                echo DOCKERHUB USER: %DOCKERHUB_CREDENTIALS_USR%
                 echo %DOCKERHUB_CREDENTIALS_PSW% | docker login -u %DOCKERHUB_CREDENTIALS_USR% --password-stdin
                 IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
                 docker tag %DOCKER_IMAGE% %DOCKER_IMAGE%:latest
