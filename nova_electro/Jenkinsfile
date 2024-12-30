@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        DOCKERHUB_CREDENTIALS = credentials('dockerhub-token') // Replace 'dockerhub-token' with the ID of your stored DockerHub credentials
-        DOCKER_IMAGE = 'elmokhtariayoub/nova_' // Replace with your DockerHub repository name
+        DOCKERHUB_CREDENTIALS = credentials('dockerhub-token') 
+        DOCKER_IMAGE = 'elmokhtariayoubnova_1' 
     }
 
     stages {
