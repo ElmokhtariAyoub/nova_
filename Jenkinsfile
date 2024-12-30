@@ -18,14 +18,14 @@ pipeline {
             steps {
                 echo 'Building the application...'
                 // Use ./gradlew only if the Gradle wrapper is present in the repository
-                sh './gradlew build'
+                bat './gradlew build'
             }
         }
 
         stage('Build Docker Image') {
             steps {
                 echo 'Building Docker image...'
-                sh "docker build -t ${DOCKER_IMAGE} ."
+                bat "docker build -t ${DOCKER_IMAGE} ."
             }
         }
 
