@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        DOCKERHUB_CREDENTIALS = credentials('dockerhub-token')
-        DOCKER_IMAGE = 'elmokhtariayoub/nova_1' // Updated with Docker Hub naming convention
+        DOCKERHUB_CREDENTIALS = credentials('dockerhub-token') 
+        DOCKER_IMAGE = 'elmokhtariayoub/nova_php'
     }
 
     stages {
@@ -14,18 +14,10 @@ pipeline {
             }
         }
 
-        stage('Build Application') {
-            steps {
-                echo 'Building the application...'
-                // Use ./gradlew only if the Gradle wrapper is present in the repository
-                bat './gradlew build'
-            }
-        }
-
         stage('Build Docker Image') {
             steps {
                 echo 'Building Docker image...'
-                bat "docker build -t ${DOCKER_IMAGE} ."
+                sh "docker build -t ${DOCKER_IMAGE} ."
             }
         }
 
@@ -43,7 +35,6 @@ pipeline {
         stage('Deploy to Remote Server') {
             steps {
                 echo 'Deploying to the remote server...'
-                // Ensure SSH keys are configured properly for non-interactive SSH
                 sh '''
                 ssh user@remote-server "
                     docker pull ${DOCKER_IMAGE}:latest &&
