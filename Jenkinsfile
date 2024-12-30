@@ -2,9 +2,9 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_USERNAME = 'bahaeddinesaim' // Docker Hub username
-        DOCKER_PASSWORD = 'dckr_pat_Ky0bNylmkA94N1u64C5-N49-oRs' // Docker Hub token
-        DOCKER_IMAGE = 'bahaeddinesaim/novaelectro' // Docker image name
+        DOCKER_USERNAME = 'bahaeddinesaim'
+        DOCKER_PASSWORD = 'dckr_pat_Ky0bNylmkA94N1u64C5-N49-oRs'
+        DOCKER_IMAGE = 'bahaeddinesaim/novaelectro'
     }
 
     stages {
@@ -19,46 +19,35 @@ pipeline {
             steps {
                 echo 'Building Docker image...'
                 bat '''
-                docker build -t %DOCKER_IMAGE% . --progress=plain
-                '''
-            }
-        }
-
-        stage('Debug Docker Login') {
-            steps {
-                echo 'Debugging Docker Login...'
-                bat '''
-                echo Username: %DOCKER_USERNAME%
-                echo Password: ****
+                docker build -t %DOCKER_IMAGE% .
                 '''
             }
         }
 
         stage('Tag and Push Docker Image') {
             steps {
-                echo 'Tagging and pushing Docker image to DockerHub...'
+                echo 'Logging in to Docker Hub and pushing Docker image...'
                 bat '''
-                echo Logging in to Docker Hub...
                 echo %DOCKER_PASSWORD% | docker login -u %DOCKER_USERNAME% --password-stdin
                 IF %ERRORLEVEL% NEQ 0 (
-                    echo ERROR: Docker login failed! Please verify your username and token.
+                    echo ERROR: Docker login failed!
                     EXIT /B 1
                 )
-                
+
                 echo Tagging Docker image...
                 docker tag %DOCKER_IMAGE% %DOCKER_IMAGE%:latest
                 IF %ERRORLEVEL% NEQ 0 (
-                    echo ERROR: Docker tag failed! Please verify the image name.
+                    echo ERROR: Docker tag failed!
                     EXIT /B 1
                 )
-                
-                echo Pushing Docker image to DockerHub...
+
+                echo Pushing Docker image...
                 docker push %DOCKER_IMAGE%:latest
                 IF %ERRORLEVEL% NEQ 0 (
-                    echo ERROR: Docker push failed! Please verify your repository permissions.
+                    echo ERROR: Docker push failed!
                     EXIT /B 1
                 )
-                
+
                 echo Docker image pushed successfully!
                 '''
             }
@@ -66,7 +55,7 @@ pipeline {
 
         stage('Deploy to Remote Server') {
             steps {
-                echo 'Deploying to the remote server...'
+                echo 'Deploying to remote server...'
                 bat '''
                 ssh user@remote-server "docker pull %DOCKER_IMAGE%:latest && docker-compose up -d"
                 '''
