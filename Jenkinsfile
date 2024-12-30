@@ -40,19 +40,19 @@ pipeline {
                 bat '''
                 echo %DOCKER_PASSWORD% | docker login -u %DOCKER_USERNAME% --password-stdin
                 IF %ERRORLEVEL% NEQ 0 (
-                    echo ERROR: Docker login failed!
+                    echo ERROR: Docker login failed1!
                     EXIT /B 1
                 )
                 
                 docker tag %DOCKER_IMAGE% %DOCKER_IMAGE%:latest
                 IF %ERRORLEVEL% NEQ 0 (
-                    echo ERROR: Docker tag failed!
+                    echo ERROR: Docker tag failed2!
                     EXIT /B 1
                 )
                 
                 docker push %DOCKER_IMAGE%:latest
                 IF %ERRORLEVEL% NEQ 0 (
-                    echo ERROR: Docker push failed!
+                    echo ERROR: Docker push failed3!
                     EXIT /B 1
                 )
                 
