@@ -2,8 +2,9 @@ pipeline {
     agent any
 
     environment {
-        DOCKERHUB_CREDENTIALS = credentials('dockerhub-token') // Assurez-vous que l'ID correspond aux nouveaux identifiants dans Jenkins.
-        DOCKER_IMAGE = 'bahaeddinesaim/novaelectro'
+        DOCKER_USERNAME = 'bahaeddinesaim'  // Votre nom d'utilisateur Docker Hub
+        DOCKER_PASSWORD = 'dckr_pat_Ky0bNylmkA94N1u64C5-N49-oRs' // Votre token Docker Hub
+        DOCKER_IMAGE = 'bahaeddinesaim/novaelectro' // Nom de l'image Docker
     }
 
     stages {
@@ -25,9 +26,9 @@ pipeline {
 
         stage('Debug Docker Login') {
             steps {
-                echo 'Testing Docker Login...'
+                echo 'Debugging Docker Login...'
                 bat '''
-                echo Username: %DOCKERHUB_CREDENTIALS_USR%
+                echo Username: %DOCKER_USERNAME%
                 echo Password: ****
                 '''
             }
@@ -37,7 +38,7 @@ pipeline {
             steps {
                 echo 'Tagging and pushing Docker image to DockerHub...'
                 bat '''
-                echo %DOCKERHUB_CREDENTIALS_PSW% | docker login -u %DOCKERHUB_CREDENTIALS_USR% --password-stdin
+                echo %DOCKER_PASSWORD% | docker login -u %DOCKER_USERNAME% --password-stdin
                 IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
                 docker tag %DOCKER_IMAGE% %DOCKER_IMAGE%:latest
                 docker push %DOCKER_IMAGE%:latest
