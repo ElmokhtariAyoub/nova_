@@ -29,12 +29,13 @@ pipeline {
             steps {
                 echo 'Tagging and pushing Docker image to DockerHub...'
                 bat '''
-                echo ${DOCKERHUB_CREDENTIALS_PSW} | docker login -u ${DOCKERHUB_CREDENTIALS_USR} --password-stdin
-                docker tag ${DOCKER_IMAGE} ${DOCKER_IMAGE}:latest
-                docker push ${DOCKER_IMAGE}:latest
+                echo %DOCKERHUB_CREDENTIALS_PSW% | docker login -u %DOCKERHUB_CREDENTIALS_USR% --password-stdin
+                docker tag %DOCKER_IMAGE% %DOCKER_IMAGE%:latest
+                docker push %DOCKER_IMAGE%:latest
                 '''
             }
         }
+
 
         stage('Deploy to Remote Server') {
             steps {
