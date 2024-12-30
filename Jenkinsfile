@@ -2,9 +2,9 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_USERNAME = 'bahaeddinesaim'
-        DOCKER_PASSWORD = 'dckr_pat_Ky0bNylmkA94N1u64C5-N49-oRs'
-        DOCKER_IMAGE = 'bahaeddinesaim/novaelectro'
+        DOCKER_USERNAME = 'bahaeddinesaim' // Docker Hub username
+        DOCKER_PASSWORD = 'dckr_pat_Ky0bNylmkA94N1u64C5-N49-oRs' // Docker Hub token
+        DOCKER_IMAGE = 'bahaeddinesaim/novaelectro' // Docker image name
     }
 
     stages {
@@ -28,18 +28,21 @@ pipeline {
             steps {
                 echo 'Tagging and pushing Docker image to DockerHub...'
                 bat '''
+                echo Logging in to Docker Hub...
                 echo %DOCKER_PASSWORD% | docker login -u %DOCKER_USERNAME% --password-stdin
                 IF %ERRORLEVEL% NEQ 0 (
                     echo ERROR: Docker login failed!
                     EXIT /B 1
                 )
                 
+                echo Tagging Docker image...
                 docker tag %DOCKER_IMAGE% %DOCKER_IMAGE%:latest
                 IF %ERRORLEVEL% NEQ 0 (
                     echo ERROR: Docker tag failed!
                     EXIT /B 1
                 )
                 
+                echo Pushing Docker image to DockerHub...
                 docker push %DOCKER_IMAGE%:latest
                 IF %ERRORLEVEL% NEQ 0 (
                     echo ERROR: Docker push failed!
