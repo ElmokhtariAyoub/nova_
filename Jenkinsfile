@@ -24,6 +24,16 @@ pipeline {
             }
         }
 
+        stage('Debug Docker Login') {
+            steps {
+                echo 'Debugging Docker Login...'
+                bat '''
+                echo Username: %DOCKER_USERNAME%
+                echo Password: ****
+                '''
+            }
+        }
+
         stage('Tag and Push Docker Image') {
             steps {
                 echo 'Tagging and pushing Docker image to DockerHub...'
