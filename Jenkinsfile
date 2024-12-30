@@ -14,12 +14,13 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image') {
-            steps {
-                echo 'Building Docker image...'
-                sh "docker build -t ${DOCKER_IMAGE} ."
-            }
+    stage('Build Docker Image') {
+        steps {
+            echo 'Building Docker image...'
+            sh "docker build -t ${DOCKER_IMAGE} . --progress=plain"
         }
+    }
+
 
         stage('Tag and Push Docker Image') {
             steps {
