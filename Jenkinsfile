@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         DOCKER_USERNAME = 'bahaeddinesaim' // Docker Hub username
-        DOCKER_PASSWORD = 'your-new-generated-token' // Docker Hub token
+        DOCKER_PASSWORD = 'dckr_pat_Ky0bNylmkA94N1u64C5-N49-oRs' // Docker Hub token
         DOCKER_IMAGE = 'bahaeddinesaim/novaelectro' // Docker image name
     }
 
