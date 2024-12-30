@@ -38,21 +38,24 @@ pipeline {
             steps {
                 echo 'Tagging and pushing Docker image to DockerHub...'
                 bat '''
+                echo Logging in to Docker Hub...
                 echo %DOCKER_PASSWORD% | docker login -u %DOCKER_USERNAME% --password-stdin
                 IF %ERRORLEVEL% NEQ 0 (
-                    echo ERROR: Docker login failed1!
+                    echo ERROR: Docker login failed! Please verify your username and token.
                     EXIT /B 1
                 )
                 
+                echo Tagging Docker image...
                 docker tag %DOCKER_IMAGE% %DOCKER_IMAGE%:latest
                 IF %ERRORLEVEL% NEQ 0 (
-                    echo ERROR: Docker tag failed2!
+                    echo ERROR: Docker tag failed! Please verify the image name.
                     EXIT /B 1
                 )
                 
+                echo Pushing Docker image to DockerHub...
                 docker push %DOCKER_IMAGE%:latest
                 IF %ERRORLEVEL% NEQ 0 (
-                    echo ERROR: Docker push failed3!
+                    echo ERROR: Docker push failed! Please verify your repository permissions.
                     EXIT /B 1
                 )
                 
