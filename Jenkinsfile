@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        DOCKERHUB_CREDENTIALS = credentials('dockerhub-token') // Replace 'dockerhub-token' with the actual ID in Jenkins
-        DOCKER_IMAGE = 'ayoubayoub/elmokhtariayoubnova_1'
+        DOCKERHUB_CREDENTIALS = credentials('dockerhub-token') // Assurez-vous que l'ID correspond aux nouveaux identifiants dans Jenkins.
+        DOCKER_IMAGE = 'bahaeddinesaim/novaelectro'
     }
 
     stages {
@@ -25,7 +25,7 @@ pipeline {
 
         stage('Debug Docker Login') {
             steps {
-                echo 'Debugging Docker Login...'
+                echo 'Testing Docker Login...'
                 bat '''
                 echo Username: %DOCKERHUB_CREDENTIALS_USR%
                 echo Password: ****
