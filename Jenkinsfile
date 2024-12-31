@@ -13,7 +13,7 @@ pipeline {
             steps {
                 echo 'Deploying to remote server...'
                 bat '''
-                ssh user@remote-server "docker pull %DOCKER_IMAGE%:latest && docker-compose up -d"
+                ssh user@localhost "docker pull %DOCKER_IMAGE%:latest && docker-compose up -d"
                 '''
             }
         }
