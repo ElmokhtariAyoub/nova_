@@ -20,6 +20,10 @@ pipeline {
                 echo 'Building Docker image...'
                 bat '''
                 docker build -t %DOCKER_IMAGE% .
+                if %ERRORLEVEL% neq 0 (
+                    echo ERROR: Docker build failed!
+                    exit /b 1
+                )
                 '''
             }
         }
@@ -29,23 +33,23 @@ pipeline {
                 echo 'Logging in to Docker Hub and pushing Docker image...'
                 bat '''
                 echo %DOCKER_PASSWORD% | docker login -u %DOCKER_USERNAME% --password-stdin
-                IF %ERRORLEVEL% NEQ 0 (
+                if %ERRORLEVEL% neq 0 (
                     echo ERROR: Docker login failed!
-                    EXIT /B 1
+                    exit /b 1
                 )
 
                 echo Tagging Docker image...
                 docker tag %DOCKER_IMAGE% %DOCKER_IMAGE%:latest
-                IF %ERRORLEVEL% NEQ 0 (
+                if %ERRORLEVEL% neq 0 (
                     echo ERROR: Docker tag failed!
-                    EXIT /B 1
+                    exit /b 1
                 )
 
                 echo Pushing Docker image...
                 docker push %DOCKER_IMAGE%:latest
-                IF %ERRORLEVEL% NEQ 0 (
+                if %ERRORLEVEL% neq 0 (
                     echo ERROR: Docker push failed!
-                    EXIT /B 1
+                    exit /b 1
                 )
 
                 echo Docker image pushed successfully!
@@ -55,16 +59,16 @@ pipeline {
 
         stage('Deploy to Remote Server') {
             steps {
-                @echo off
-                set DOCKER_IMAGE=bahaeddinesaim/novaelectro
-
+                echo 'Deploying to remote server...'
+                bat '''
+                set DOCKER_IMAGE=%DOCKER_IMAGE%
                 ssh user@localhost "docker pull %DOCKER_IMAGE%:latest && docker-compose up -d"
                 if %ERRORLEVEL% neq 0 (
-                 echo "Échec de la commande SSH."
-                 exit /b %ERRORLEVEL%
+                    echo ERROR: Deployment failed!
+                    exit /b 1
                 )
-                secho "Commande exécutée avec succès."
-
+                echo Deployment successful!
+                '''
             }
         }
     }
