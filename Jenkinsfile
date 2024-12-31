@@ -8,13 +8,63 @@ pipeline {
     }
 
     stages {
-        
+        stage('Clone Repository') {
+            steps {
+                echo 'Cloning the repository...'
+                git branch: 'master', url: 'https://github.com/ElmokhtariAyoub/nova_'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                echo 'Building Docker image...'
+                bat '''
+                docker build -t %DOCKER_IMAGE% .
+                '''
+            }
+        }
+
+        stage('Tag and Push Docker Image') {
+            steps {
+                echo 'Logging in to Docker Hub and pushing Docker image...'
+                bat '''
+                echo %DOCKER_PASSWORD% | docker login -u %DOCKER_USERNAME% --password-stdin
+                IF %ERRORLEVEL% NEQ 0 (
+                    echo ERROR: Docker login failed!
+                    EXIT /B 1
+                )
+
+                echo Tagging Docker image...
+                docker tag %DOCKER_IMAGE% %DOCKER_IMAGE%:latest
+                IF %ERRORLEVEL% NEQ 0 (
+                    echo ERROR: Docker tag failed!
+                    EXIT /B 1
+                )
+
+                echo Pushing Docker image...
+                docker push %DOCKER_IMAGE%:latest
+                IF %ERRORLEVEL% NEQ 0 (
+                    echo ERROR: Docker push failed!
+                    EXIT /B 1
+                )
+
+                echo Docker image pushed successfully!
+                '''
+            }
+        }
+
         stage('Deploy to Remote Server') {
             steps {
-                echo 'Deploying to remote server...'
-                bat '''
+                @echo off
+                set DOCKER_IMAGE=bahaeddinesaim/novaelectro
+
                 ssh user@localhost "docker pull %DOCKER_IMAGE%:latest && docker-compose up -d"
-                '''
+                if %ERRORLEVEL% neq 0 (
+                 echo "Échec de la commande SSH."
+                 exit /b %ERRORLEVEL%
+                )
+                secho "Commande exécutée avec succès."
+
             }
         }
     }
